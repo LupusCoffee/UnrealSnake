@@ -45,14 +45,6 @@ void ARollaBallPlayer::BeginPlay()
 	//so we work with smaller values when setting move and jump force
 	MoveForce *= Mesh->GetMass();
 	JumpForce *= Mesh->GetMass();
-	GravityForce *= Mesh->GetMass();
-}
-
-void ARollaBallPlayer::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-	
-	MoveTowardsGravity();
 }
 
 // Called to bind functionality to input
