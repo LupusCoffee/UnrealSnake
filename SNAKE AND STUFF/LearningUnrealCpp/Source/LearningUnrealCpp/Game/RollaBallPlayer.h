@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "InputAction.h"
 #include "GameFramework/Pawn.h"
+#include "LearningUnrealCpp/Components/Tail_Component.h"
+#include "LearningUnrealCpp/Interfaces/TailInterface.h"
 #include "RollaBallPlayer.generated.h"
 
 // Forward declarations
@@ -14,7 +16,7 @@ class UInputMappingContext;
 class UBaseMovementDataConfig;
 
 UCLASS()
-class LEARNINGUNREALCPP_API ARollaBallPlayer : public APawn
+class LEARNINGUNREALCPP_API ARollaBallPlayer : public APawn, public ITailInterface
 {
 	GENERATED_BODY()
 
@@ -26,6 +28,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	//Definite Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -37,6 +40,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* Camera;
 
+	//Added Components
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UTail_Component* TailComponent;
+
 	// VARIABLES //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveForce = 5000.0f;
@@ -44,6 +51,8 @@ protected:
 	float JumpForce = 500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxJumpCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GravityForce = 3000.0f;
 
 	// INPUTS //
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
@@ -51,6 +60,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UBaseMovementDataConfig* InputActions;
 
+	
 public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -68,4 +78,8 @@ private:
 		FVector NormalImpulse, const FHitResult& Hit);
 
 	int32 JumpCount = 0;
+
+	
+public:
+	virtual UTail_Component* GetTailComponent_Implementation() override;
 };

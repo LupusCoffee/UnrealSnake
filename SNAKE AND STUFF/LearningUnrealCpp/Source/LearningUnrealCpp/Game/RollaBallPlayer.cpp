@@ -14,7 +14,7 @@
 ARollaBallPlayer::ARollaBallPlayer()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	//TO-DO: remove them? or perhaps unreal has a garbage collector for it?
 	//Create Components
@@ -22,6 +22,7 @@ ARollaBallPlayer::ARollaBallPlayer()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArm2 = CreateDefaultSubobject<USpringArmComponent>("SpringArm2");
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	TailComponent = CreateDefaultSubobject<UTail_Component>("TailComponent");
 
 	//Set the Root Component to be our Mesh
 	RootComponent = Mesh;
@@ -45,6 +46,16 @@ void ARollaBallPlayer::BeginPlay()
 	//so we work with smaller values when setting move and jump force
 	MoveForce *= Mesh->GetMass();
 	JumpForce *= Mesh->GetMass();
+	GravityForce *= Mesh->GetMass();
+}
+
+void ARollaBallPlayer::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//Gravity Push Down
+	const FVector Direction = FVector(0,0,-1.0f);
+	Mesh->AddForce(Direction * GravityForce);
 }
 
 // Called to bind functionality to input
@@ -123,4 +134,9 @@ void ARollaBallPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	//The further above us the hit, the closer to -1 the HitDirection.
 	const float HitDirection = Hit.Normal.Z;
 	if (HitDirection > 0) JumpCount = 0;
+}
+
+UTail_Component* ARollaBallPlayer::GetTailComponent_Implementation()
+{
+	return TailComponent;
 }
