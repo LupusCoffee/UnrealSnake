@@ -17,6 +17,8 @@ class LEARNINGUNREALCPP_API UBaseMovementDataConfig : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* CameraMovement;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* MoveForward;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* MoveRight;

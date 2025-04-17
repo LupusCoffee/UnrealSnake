@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputAction.h"
 #include "GameFramework/Pawn.h"
 #include "RollaBallPlayer.generated.h"
 
@@ -32,11 +33,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USpringArmComponent* SpringArm2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* Camera;
 
 	// VARIABLES //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveForce = 500.0f;
+	float MoveForce = 5000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpForce = 500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -54,9 +57,15 @@ public:
 
 private:
 	// FUNCTIONS //
-	UFUNCTION() void MoveRight(const float Value);
-	UFUNCTION() void MoveForward(const float Value);
+	//Inputs
+	UFUNCTION() void RotateCamera(const FInputActionValue& Value);
+	UFUNCTION() void MoveRight(const FInputActionValue& Value);
+	UFUNCTION() void MoveForward(const FInputActionValue& Value);
 	UFUNCTION() void Jump();
+
+	//Others
+	UFUNCTION() void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
+		FVector NormalImpulse, const FHitResult& Hit);
 
 	int32 JumpCount = 0;
 };
