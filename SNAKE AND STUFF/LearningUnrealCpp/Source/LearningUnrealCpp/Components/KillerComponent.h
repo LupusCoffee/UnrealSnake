@@ -22,6 +22,9 @@ protected:
 	class UBoxComponent* BoxTrigger;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	class UCapsuleComponent* CapsuleTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
+	bool WillInheritScale = true;
 	
 	UFUNCTION()
 	virtual void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

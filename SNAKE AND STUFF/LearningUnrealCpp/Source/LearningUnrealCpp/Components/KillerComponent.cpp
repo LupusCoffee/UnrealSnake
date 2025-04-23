@@ -32,8 +32,16 @@ void UKillerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (BoxTrigger) BoxTrigger->SetWorldLocation(GetOwner()->GetActorLocation());
-	if (CapsuleTrigger) CapsuleTrigger->SetWorldLocation(GetOwner()->GetActorLocation());
+	if (BoxTrigger)
+	{
+		BoxTrigger->SetWorldLocation(GetOwner()->GetActorLocation());
+		BoxTrigger->SetWorldRotation(GetOwner()->GetActorRotation());
+	}
+	if (CapsuleTrigger)
+	{
+		CapsuleTrigger->SetWorldLocation(GetOwner()->GetActorLocation());
+		CapsuleTrigger->SetWorldRotation(GetOwner()->GetActorRotation());
+	}
 }
 
 
