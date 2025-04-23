@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "BaseTailObj.h"
 #include "Tail_Component.generated.h"
-
 
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LEARNINGUNREALCPP_API UTail_Component : public UActorComponent
@@ -16,25 +16,41 @@ class LEARNINGUNREALCPP_API UTail_Component : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UTail_Component();
-
+	
 	UFUNCTION() void AddTail();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* Mesh;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UStaticMeshComponent* Mesh2;
-	
-	// VARIABLES //
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int InitialLength = 3;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int TailIncrement = 1;
 
-	UPROPERTY(BlueprintReadOnly)
+	//Components
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	USceneComponent* TailSpawnLocation;
+	
+	//Initial Variables
+	UPROPERTY(EditDefaultsOnly,					   Category = "Tail Adding")
+	TSubclassOf<ABaseTailObj> TailActorToSpawn;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Adding")
+	int InitialLength = 3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Adding")
+	int TailIncrement = 1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Behaviour")
+	float HeadObjectPadding = 5.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Behaviour")
+	float TailObjectPadding = 5.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Behaviour")
+	float TailSpeed = 0.5f;
+
+	//Continous Variables
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int CurrentLength = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<ABaseTailObj*> TailObjects;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector OwnerDirection = FVector(0, 0, 0);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector ThisFrameOwnerPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector LastFrameOwnerPosition;
 };

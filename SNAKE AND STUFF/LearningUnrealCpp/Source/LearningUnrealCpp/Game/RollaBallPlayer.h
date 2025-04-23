@@ -6,9 +6,12 @@
 #include "InputAction.h"
 #include "GameFramework/Pawn.h"
 #include "LearningUnrealCpp/Components/Tail_Component.h"
+#include "LearningUnrealCpp/Interfaces/KillableInterface.h"
 #include "LearningUnrealCpp/Interfaces/TailInterface.h"
 #include "RollaBallPlayer.generated.h"
 
+class UParticleEmitter;
+class UPointLightComponent;
 // Forward declarations
 class USpringArmComponent;
 class UCameraComponent;
@@ -16,7 +19,7 @@ class UInputMappingContext;
 class UBaseMovementDataConfig;
 
 UCLASS()
-class LEARNINGUNREALCPP_API ARollaBallPlayer : public APawn, public ITailInterface
+class LEARNINGUNREALCPP_API ARollaBallPlayer : public APawn, public ITailInterface, public IKillableInterface
 {
 	GENERATED_BODY()
 
@@ -34,19 +37,31 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* Mesh;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* CameraScene;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USpringArmComponent* SpringArm2;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* Camera;
 
-	//Added Components
+	//Added Components / Interfaces
+	//tail
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UTail_Component* TailComponent;
+
+	//Visual Stuff
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USceneComponent* VisualScene;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPointLightComponent* Light;
 
 	// VARIABLES //
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveForce = 5000.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaximumVelocity = 5000.0f;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpForce = 500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -60,7 +75,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UBaseMovementDataConfig* InputActions;
 
-	
 public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -81,5 +95,7 @@ private:
 
 	
 public:
+	//Interfaces
 	virtual UTail_Component* GetTailComponent_Implementation() override;
+	virtual void Kill_Implementation() override;
 };

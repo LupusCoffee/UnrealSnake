@@ -42,12 +42,18 @@ void ARollaBallItemBase::BeginPlay()
 void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//is there a way to just cast to the component itself?
-	//Cause like, making the whole tail interface just for this is really annoying
-
-	if (OtherActor->Implements<UTailInterface>())
+	/*if (OtherActor->Implements<UTailInterface>()) //so annoying lol
 	{
 		ITailInterface::Execute_GetTailComponent(OtherActor)->AddTail();
+	}*/
+
+	UActorComponent* ComponentActor = OtherActor->GetComponentByClass(UTail_Component::StaticClass());
+	
+
+	if (ComponentActor)
+	{
+		UTail_Component* TailComponent = Cast<UTail_Component>(ComponentActor);
+		if (TailComponent) TailComponent->AddTail();
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "BaseMovementDataConfig.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/PointLightComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 
@@ -15,25 +16,30 @@ ARollaBallPlayer::ARollaBallPlayer()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	//TO-DO: remove them? or perhaps unreal has a garbage collector for it?
+	
 	//Create Components
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	CameraScene = CreateDefaultSubobject<USceneComponent>("CameraScene");
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArm2 = CreateDefaultSubobject<USpringArmComponent>("SpringArm2");
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	VisualScene = CreateDefaultSubobject<USceneComponent>("VisualScene");
+	Light = CreateDefaultSubobject<UPointLightComponent>("Light!");
 	TailComponent = CreateDefaultSubobject<UTail_Component>("TailComponent");
-
-	//Set the Root Component to be our Mesh
+	
+	//Set hierarchy
 	RootComponent = Mesh;
-	//Attaching the rest of the components
-	SpringArm->SetupAttachment(Mesh);
+	CameraScene->SetupAttachment(RootComponent);
+	SpringArm->SetupAttachment(CameraScene);
 	SpringArm2->SetupAttachment(SpringArm);
 	Camera->SetupAttachment(SpringArm2);
-
+	VisualScene->SetupAttachment(RootComponent);
+	Light->SetupAttachment(VisualScene);
+	
 	//Set physics to true as a default (since it's in the constructor)
 	Mesh->SetSimulatePhysics(true);
-
+	
+	//Bindings
 	//Dynamic Delegate Binding between mesh's "OnComponentHit" function and RollaBallPlayer's "OnHit" function
 	Mesh->OnComponentHit.AddDynamic(this, &ARollaBallPlayer::OnHit);
 }
@@ -113,6 +119,10 @@ void ARollaBallPlayer::MoveForward(const FInputActionValue& Value)
 	//move the MESH in the vertical direction with a certain force
 	Mesh->AddForce(VerticalForce);
 
+	//TODO: cap velocity at a "MaximumVelocity" + combine MoveForward and MoveRight
+	/*if (Mesh->GetComponentVelocity().Size() >= MaximumVelocity)
+		Mesh->SetAllPhysicsLinearVelocity(MoveDirection * MaximumVelocity);*/
+
 }
 
 void ARollaBallPlayer::Jump()
@@ -125,6 +135,7 @@ void ARollaBallPlayer::Jump()
 	JumpCount++;
 }
 
+
 //this function is bound to the mesh's "OnComponentHit" function.
 //In other words, this gets called when that function is called and some info is passed through
 void ARollaBallPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
@@ -136,7 +147,14 @@ void ARollaBallPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	if (HitDirection > 0) JumpCount = 0;
 }
 
+
+//Interfaces
 UTail_Component* ARollaBallPlayer::GetTailComponent_Implementation()
 {
 	return TailComponent;
+}
+
+void ARollaBallPlayer::Kill_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,	"TRIGGER!!!");
 }

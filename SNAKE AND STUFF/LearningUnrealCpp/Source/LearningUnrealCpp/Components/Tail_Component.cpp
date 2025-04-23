@@ -2,27 +2,22 @@
 
 
 #include "Tail_Component.h"
+#include "BaseTailObj.h"
+#include "VectorTypes.h"
 
 // Sets default values for this component's properties
-UTail_Component::UTail_Component()
+UTail_Component::UTail_Component(): ThisFrameOwnerPosition(FVector::ZeroVector), LastFrameOwnerPosition(FVector::ZeroVector)
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh1"));
-	Mesh2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh2"));
-
-	Mesh2->SetupAttachment(Mesh);
+	TailSpawnLocation = CreateDefaultSubobject<USceneComponent>("TailSpawnLocation");
 }
-
 
 // Called when the game starts
 void UTail_Component::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentLength = InitialLength;
+	for (int i = 0; i < InitialLength; ++i) AddTail();
 }
 
 
@@ -30,16 +25,68 @@ void UTail_Component::BeginPlay()
 void UTail_Component::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	//calculate owner direction
+	ThisFrameOwnerPosition = GetOwner()->GetActorLocation();
+	OwnerDirection = FVector
+	(
+		ThisFrameOwnerPosition.X-LastFrameOwnerPosition.X,
+		ThisFrameOwnerPosition.Y-LastFrameOwnerPosition.Y,
+		ThisFrameOwnerPosition.Z-LastFrameOwnerPosition.Z
+	);
+	OwnerDirection = OwnerDirection.GetSafeNormal();
+	LastFrameOwnerPosition = GetOwner()->GetActorLocation();
+	
+	//move tail
+	//first tail object
+	if (TailObjects.Num() > 0)
+	{
+		//TODO: properly understand what VInterpTo actually does
+		TailObjects[0]->SetActorLocation(FMath::VInterpTo(
+			TailObjects[0]->GetActorLocation(),
+			ThisFrameOwnerPosition - OwnerDirection*HeadObjectPadding,
+			DeltaTime, TailSpeed));
+	}
+	//other tail objects
+	for (int i = 1; i < TailObjects.Num(); i++)
+	{
+		TailObjects[i]->SetActorLocation(FMath::VInterpTo(
+			TailObjects[i]->GetActorLocation(),
+			TailObjects[i-1]->GetActorLocation() - TailObjects[i-1]->GetDirection()*TailObjectPadding,
+			DeltaTime, TailSpeed));
+	}
 
-	//move each tail mesh like a train
+	//Move tail spawn point
+	TailSpawnLocation->SetWorldLocation(FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, TailSpawnLocation->GetComponentLocation().Z));
 }
 
 void UTail_Component::AddTail()
 {
-	CurrentLength += TailIncrement;
-	//add new tail to follow
+	if (!TailActorToSpawn)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,
+			"TailActorToSpawn is null. You probably didn't add an object to spawn as a tail object");
+		return;
+	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f,
-		FColor::Red, FString::SanitizeFloat(CurrentLength));
+	//add new tail to follow
+	CurrentLength += TailIncrement;
+	for (int i = 0; i < TailIncrement; ++i)
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = GetOwner();
+		SpawnParameters.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		ABaseTailObj* NewTailObj = GetWorld()->SpawnActor<ABaseTailObj>
+		(
+			TailActorToSpawn,
+			TailSpawnLocation->GetComponentLocation(),
+			FRotator::ZeroRotator,
+			SpawnParameters	
+		);
+		
+		TailObjects.Add(NewTailObj);
+	}
 }
 
