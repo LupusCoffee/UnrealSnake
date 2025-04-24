@@ -50,12 +50,12 @@ void ARollaBallPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerState = GetPlayerState<APlayerStateBase>();
+	SnakePlayerState = GetPlayerState<APlayerStateBase>(); //is there a better way than this? should i maybe not, since there is already one in APawn?
 	
 	//so we work with smaller values when setting move and jump force
 	MoveForce *= Mesh->GetMass();
 	JumpForce *= Mesh->GetMass();
-	GravityForce *= Mesh->GetMass()
+	GravityForce *= Mesh->GetMass();
 }
 
 void ARollaBallPlayer::Tick(float DeltaTime)
@@ -162,5 +162,5 @@ UTail_Component* ARollaBallPlayer::GetTailComponent_Implementation()
 void ARollaBallPlayer::Kill_Implementation()
 {
 	//tell player state that i'm dead
-	PlayerState->SetDeathStatus(true);
+	if (SnakePlayerState) SnakePlayerState->SetDeathStatus(true);
 }

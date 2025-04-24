@@ -22,8 +22,6 @@ void ASnakeGameModeBase::BeginPlay()
 
 void ASnakeGameModeBase::PlayerDeath(ARollaBallPlayer* PlayerActor)
 {
-	//this implementation will be different depending on the game mode
-	
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f,
-		FColor::Red, TEXT("Player is dead!"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,
+	TEXT("BRUH"));
 }

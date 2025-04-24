@@ -16,6 +16,5 @@ public:
 	virtual void BeginPlay() override;
 	
 protected:
-	UFUNCTION()
-	void PlayerDeath(ARollaBallPlayer* PlayerActor);
+	virtual void PlayerDeath(ARollaBallPlayer* PlayerActor);
 };

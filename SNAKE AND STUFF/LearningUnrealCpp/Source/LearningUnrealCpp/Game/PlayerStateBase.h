@@ -29,7 +29,7 @@ public:
 	UFUNCTION()
 	void AddLengthScore(int Increment);
 	UFUNCTION()
-	void SetDeathStatus(bool DeathStatus);
+	virtual void SetDeathStatus(bool DeathStatus);
 
 	//Getters
 	UFUNCTION()

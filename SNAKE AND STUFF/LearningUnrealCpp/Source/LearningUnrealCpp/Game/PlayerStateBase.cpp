@@ -23,12 +23,6 @@ void APlayerStateBase::SetDeathStatus(bool DeathStatus)
 
 	if (IsDead)
 	{
-		//invoke this player to be dead
-		//game state created the event, game mode listens to it
-
-		//do this on a "HighScorePlayerState" class
-		//HighScoreGameState->OnPlayerDeathEvent.Broadcast(player);
-
 		//do this on a "BattlePlayerState" class
 		//find the battle game state, then do BattleGameState->OnPlayerDeathEvent.Broadcast(player);
 
@@ -36,7 +30,7 @@ void APlayerStateBase::SetDeathStatus(bool DeathStatus)
 	}
 	
 	//->BATTLE GAME MODE: game state tells game mode (by listening)
-	//  that a specific player has died (if 1 or less players left, end game)
+	//  that a specific player has died (if 1 or less player left, end game)
 	
 	//->HIGH SCORE GAME MODE: game state tells game mode (by listening)
 	//	that a specific player has died (respawns this

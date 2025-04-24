@@ -10,6 +10,7 @@
 #include "LearningUnrealCpp/Interfaces/TailInterface.h"
 #include "RollaBallPlayer.generated.h"
 
+class APlayerStateBase;
 class UParticleEmitter;
 class UPointLightComponent;
 // Forward declarations
@@ -75,7 +76,8 @@ protected:
 	UBaseMovementDataConfig* InputActions;
 
 	//Network Shiz
-	APlayerStateBase* PlayerState;
+	UPROPERTY()
+	APlayerStateBase* SnakePlayerState;
 
 public:
 	// Called to bind functionality to input
