@@ -49,7 +49,6 @@ protected:
 	//tail
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UTail_Component* TailComponent;
-
 	//Visual Stuff
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* VisualScene;
@@ -74,6 +73,9 @@ protected:
 	UInputMappingContext* InputMapping;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UBaseMovementDataConfig* InputActions;
+
+	//Network Shiz
+	APlayerStateBase* PlayerState;
 
 public:
 	// Called to bind functionality to input

@@ -48,7 +48,6 @@ void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 	}*/
 
 	UActorComponent* ComponentActor = OtherActor->GetComponentByClass(UTail_Component::StaticClass());
-	
 
 	if (ComponentActor)
 	{

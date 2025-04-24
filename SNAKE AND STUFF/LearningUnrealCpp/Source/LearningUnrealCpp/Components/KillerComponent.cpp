@@ -23,6 +23,22 @@ void UKillerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (UseActorMesh)
+	{
+		UActorComponent* OwnerMeshActorComponent = GetOwner()->GetComponentByClass(UStaticMeshComponent::StaticClass());
+		if (OwnerMeshActorComponent)
+		{
+			UStaticMeshComponent* OwnerMeshComponent = Cast<UStaticMeshComponent>(OwnerMeshActorComponent);
+			if (OwnerMeshComponent)
+			{
+				//bind collision hit event & make sure hit events are generated
+				OwnerMeshComponent->OnComponentHit.AddDynamic(this, &UKillerComponent::OnColliderHit);
+				OwnerMeshComponent->SetNotifyRigidBodyCollision(true);
+			}
+		}
+		return;
+	}
+	
 	if (BoxTrigger) BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &UKillerComponent::OnTriggerBeginOverlap);
 	if (CapsuleTrigger) CapsuleTrigger->OnComponentBeginOverlap.AddDynamic(this, &UKillerComponent::OnTriggerBeginOverlap);
 }
@@ -31,6 +47,8 @@ void UKillerComponent::BeginPlay()
 void UKillerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (UseActorMesh) return;
 	
 	if (BoxTrigger)
 	{
@@ -47,6 +65,13 @@ void UKillerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UKillerComponent::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->Implements<UKillableInterface>())
+		IKillableInterface::Execute_Kill(OtherActor);
+}
+
+void UKillerComponent::OnColliderHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor->Implements<UKillableInterface>())
 		IKillableInterface::Execute_Kill(OtherActor);

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "BaseMovementDataConfig.h"
+#include "PlayerStateBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
@@ -49,10 +50,12 @@ void ARollaBallPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PlayerState = GetPlayerState<APlayerStateBase>();
+	
 	//so we work with smaller values when setting move and jump force
 	MoveForce *= Mesh->GetMass();
 	JumpForce *= Mesh->GetMass();
-	GravityForce *= Mesh->GetMass();
+	GravityForce *= Mesh->GetMass()
 }
 
 void ARollaBallPlayer::Tick(float DeltaTime)
@@ -69,8 +72,10 @@ void ARollaBallPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	//TODO: when you make ai, all this shit needs to be moved to a "human" controller, so an "AI" controller can use move and jump functions via its behaviour
+	
 	//Set InputMapping as our current mapping.
-	APlayerController* PlayerController = Cast<APlayerController>(GetController()); //get player controller + set
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 	Subsystem->ClearAllMappings();
 	Subsystem->AddMappingContext(InputMapping, 0);
@@ -156,5 +161,6 @@ UTail_Component* ARollaBallPlayer::GetTailComponent_Implementation()
 
 void ARollaBallPlayer::Kill_Implementation()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,	"TRIGGER!!!");
+	//tell player state that i'm dead
+	PlayerState->SetDeathStatus(true);
 }

@@ -3,15 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RollaBallPlayer.h"
 #include "GameFramework/GameModeBase.h"
 #include "SnakeGameModeBase.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class LEARNINGUNREALCPP_API ASnakeGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	virtual void BeginPlay() override;
 	
+protected:
+	UFUNCTION()
+	void PlayerDeath(ARollaBallPlayer* PlayerActor);
 };

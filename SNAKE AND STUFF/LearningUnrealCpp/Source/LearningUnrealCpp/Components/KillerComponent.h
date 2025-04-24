@@ -22,13 +22,15 @@ protected:
 	class UBoxComponent* BoxTrigger;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
 	class UCapsuleComponent* CapsuleTrigger;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Components")
-	bool WillInheritScale = true;
+	bool UseActorMesh = false;
 	
 	UFUNCTION()
 	virtual void OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	virtual void OnColliderHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:	
 	// Called every frame
