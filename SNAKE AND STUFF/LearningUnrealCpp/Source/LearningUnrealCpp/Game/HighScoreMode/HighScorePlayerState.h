@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PlayerStateBase.h"
+#include "../PlayerStateBase.h"
 #include "HighScorePlayerState.generated.h"
 
 UCLASS()
@@ -21,5 +21,7 @@ protected:
 	ARollaBallPlayer* PlayerPawn;
 	
 public:
+	UFUNCTION() int GetLengthScore();
+	UFUNCTION() void SetLengthScore(ARollaBallPlayer* Player, int NewLengthScore);
 	virtual void SetDeathStatus(bool DeathStatus) override;
 };

@@ -4,18 +4,8 @@
 #include "PlayerStateBase.h"
 
 //Begin play
-//do this on a "HighScorePlayerState" class
-//find the high score game state, set it to the "game state"
 //do this on a "BattlePlayerState" class
 //find the battle game state, set it to the "game state"
-
-void APlayerStateBase::SetLengthScore(int NewLengthScore)
-{
-}
-
-void APlayerStateBase::AddLengthScore(int Increment)
-{
-}
 
 void APlayerStateBase::SetDeathStatus(bool DeathStatus)
 {
@@ -35,11 +25,6 @@ void APlayerStateBase::SetDeathStatus(bool DeathStatus)
 	//->HIGH SCORE GAME MODE: game state tells game mode (by listening)
 	//	that a specific player has died (respawns this
 	//	RollaBallPlayer after 5 seconds with less score than previous)
-}
-
-int APlayerStateBase::GetLengthScore()
-{
-	return LengthScore;
 }
 
 bool APlayerStateBase::GetDeathStatus()

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "HighScoreGameState.h"
+#include "HighScoreMode/HighScoreGameState.h"
 #include "GameFramework/PlayerState.h"
 #include "PlayerStateBase.generated.h"
 
@@ -25,15 +25,9 @@ protected:
 public:
 	//Setters
 	UFUNCTION()
-	void SetLengthScore(int NewLengthScore);
-	UFUNCTION()
-	void AddLengthScore(int Increment);
-	UFUNCTION()
 	virtual void SetDeathStatus(bool DeathStatus);
 
 	//Getters
-	UFUNCTION()
-	int GetLengthScore();
 	UFUNCTION()
 	bool GetDeathStatus();
 };

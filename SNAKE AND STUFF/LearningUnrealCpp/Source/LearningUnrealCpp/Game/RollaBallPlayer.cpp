@@ -1,16 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "RollaBallPlayer.h"
-
-#include <string>
-
-#include "BaseMovementDataConfig.h"
+#include "Input/BaseMovementDataConfig.h"
 #include "PlayerStateBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
+#include "LearningUnrealCpp/Components/PlayerTailComponent.h"
 
 // Sets default values
 ARollaBallPlayer::ARollaBallPlayer()
@@ -26,7 +24,9 @@ ARollaBallPlayer::ARollaBallPlayer()
 	Camera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	VisualScene = CreateDefaultSubobject<USceneComponent>("VisualScene");
 	Light = CreateDefaultSubobject<UPointLightComponent>("Light!");
-	TailComponent = CreateDefaultSubobject<UTail_Component>("TailComponent");
+	//TailComponent = CreateDefaultSubobject<UPlayerTailComponent>(TEXT("TailComponent")); //WTFFFFFFFFFFFFFFFFFFFFFFFF
+	UActorComponent* Bruh = GetComponentByClass(UPlayerTailComponent::StaticClass());
+	if (Bruh) TailComponent = Cast<UPlayerTailComponent>(Bruh);
 	
 	//Set hierarchy
 	RootComponent = Mesh;

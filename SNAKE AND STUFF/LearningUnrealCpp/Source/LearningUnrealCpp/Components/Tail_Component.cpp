@@ -3,7 +3,6 @@
 
 #include "Tail_Component.h"
 #include "BaseTailObj.h"
-#include "VectorTypes.h"
 
 // Sets default values for this component's properties
 UTail_Component::UTail_Component(): ThisFrameOwnerPosition(FVector::ZeroVector), LastFrameOwnerPosition(FVector::ZeroVector)
@@ -16,7 +15,7 @@ UTail_Component::UTail_Component(): ThisFrameOwnerPosition(FVector::ZeroVector),
 void UTail_Component::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	for (int i = 0; i < InitialLength; ++i) AddTail();
 }
 
@@ -57,7 +56,12 @@ void UTail_Component::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 	}
 
 	//Move tail spawn point
-	TailSpawnLocation->SetWorldLocation(FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, TailSpawnLocation->GetComponentLocation().Z));
+	TailSpawnLocation->SetWorldLocation(FVector(GetOwner()->GetActorLocation().X, GetOwner()->GetActorLocation().Y, SpawnHeightAbovePlayer));
+}
+
+int UTail_Component::GetTailLength()
+{
+	return CurrentLength;
 }
 
 void UTail_Component::AddTail()

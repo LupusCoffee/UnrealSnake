@@ -7,6 +7,8 @@
 #include "BaseTailObj.h"
 #include "Tail_Component.generated.h"
 
+class ARollaBallPlayer;
+
 UCLASS( Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LEARNINGUNREALCPP_API UTail_Component : public UActorComponent
 {
@@ -17,7 +19,7 @@ public:
 	// Sets default values for this component's properties
 	UTail_Component();
 	
-	UFUNCTION() void AddTail();
+	UFUNCTION() virtual void AddTail();
 
 protected:
 	// Called when the game starts
@@ -25,10 +27,12 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	//Components
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* TailSpawnLocation;
 	
 	//Initial Variables
+	UPROPERTY(EditDefaultsOnly,					   Category = "Tail Adding")
+	int SpawnHeightAbovePlayer = 200;
 	UPROPERTY(EditDefaultsOnly,					   Category = "Tail Adding")
 	TSubclassOf<ABaseTailObj> TailActorToSpawn;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tail Adding")
@@ -53,4 +57,7 @@ protected:
 	FVector ThisFrameOwnerPosition;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector LastFrameOwnerPosition;
+
+public:
+	int GetTailLength();
 };

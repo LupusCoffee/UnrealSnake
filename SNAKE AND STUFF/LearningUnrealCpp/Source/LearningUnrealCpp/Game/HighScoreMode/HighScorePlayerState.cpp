@@ -15,6 +15,20 @@ void AHighScorePlayerState::BeginPlay()
 	if (GameState) HighScoreGameState = Cast<AHighScoreGameState>(GameState);
 	
 	if (GetPawn()) PlayerPawn = Cast<ARollaBallPlayer>(GetPawn());
+
+	//bindings
+	if (HighScoreGameState)
+		HighScoreGameState->OnPlayerGotPoints.AddDynamic(this, &AHighScorePlayerState::SetLengthScore);
+}
+
+int AHighScorePlayerState::GetLengthScore()
+{
+	return LengthScore;
+}
+
+void AHighScorePlayerState::SetLengthScore(ARollaBallPlayer* Player, int NewLengthScore)
+{
+	LengthScore = NewLengthScore;
 }
 
 void AHighScorePlayerState::SetDeathStatus(bool DeathStatus)

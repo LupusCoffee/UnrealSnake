@@ -10,6 +10,7 @@
 #include "LearningUnrealCpp/Interfaces/TailInterface.h"
 #include "RollaBallPlayer.generated.h"
 
+class UPlayerTailComponent;
 class APlayerStateBase;
 class UParticleEmitter;
 class UPointLightComponent;
@@ -48,8 +49,8 @@ protected:
 
 	//Added Components / Interfaces
 	//tail
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UTail_Component* TailComponent;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	UPlayerTailComponent* TailComponent;
 	//Visual Stuff
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USceneComponent* VisualScene;

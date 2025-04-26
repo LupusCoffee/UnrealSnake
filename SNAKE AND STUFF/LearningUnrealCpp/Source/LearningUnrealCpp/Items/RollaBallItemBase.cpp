@@ -38,21 +38,18 @@ void ARollaBallItemBase::BeginPlay()
 	
 }
 
-//what do i do about this???
 void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	/*if (OtherActor->Implements<UTailInterface>()) //so annoying lol
-	{
-		ITailInterface::Execute_GetTailComponent(OtherActor)->AddTail();
-	}*/
-
 	UActorComponent* ComponentActor = OtherActor->GetComponentByClass(UTail_Component::StaticClass());
-
 	if (ComponentActor)
 	{
 		UTail_Component* TailComponent = Cast<UTail_Component>(ComponentActor);
-		if (TailComponent) TailComponent->AddTail();
+		if (TailComponent)
+		{
+			TailComponent->AddTail();
+			OnTailOverlap();
+		}
 	}
 }
 
