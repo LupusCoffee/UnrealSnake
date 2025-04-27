@@ -52,6 +52,9 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 		{
 			GameInstance->SetHighestScore(HighScoreGameState->GetHighestScore());
 			GameInstance->SetWinningPlayer(HighScoreGameState->GetWinningPlayer());
+
+			//gotta do summin about the players still being there
+			
 			UGameplayStatics::OpenLevel(GameInstance, FName(TEXT("HighScoreResults"))); //TODO: use an enum for map names
 		}
 		else
