@@ -31,8 +31,13 @@ void AHighScoreGameMode::BeginPlay()
 void AHighScoreGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (!HighScoreGameState) return;
+
+	//tick respawn time for players that need respawning
+	HighScoreGameState->PlayersRespawnTick(DeltaTime);
+
+	//End Game
 	HighScoreGameState->SetCurrentTime(HighScoreGameState->GetCurrentTime() - DeltaTime);
 	if (HighScoreGameState->GetCurrentTime() < 0)
 	{
@@ -55,9 +60,6 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 				TEXT("NO HIGH SCORE GAME INSTANCE."));
 		}
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,
-	FString::SanitizeFloat(HighScoreGameState->GetCurrentTime()));
 	
 	//TODO: update a widget for all players to see the timer
 }
@@ -74,6 +76,12 @@ void AHighScoreGameMode::PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Scor
 void AHighScoreGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
 {
 	Super::PlayerDeath(PlayerActor);
+	
+	if (!HighScoreGameState) return;
 
-	//wait 5 seconds, respawn player
+	//int TailLength = PlayerActor->GetTailComponent()->GetTailLength()/PlayerActor->GetTailComponent()->GetTailIncrement();
+	HighScoreGameState->AddPlayerToRespawn(PlayerActor->GetController(), PlayerActor->GetClass());
+
+	//TODO: fix why this isn't working again after a respawn
+	PlayerActor->Destroy();
 }

@@ -9,6 +9,7 @@
 class USnakeGameInstance;
 class AHighScoreGameState;
 
+
 UCLASS()
 class LEARNINGUNREALCPP_API AHighScoreGameMode : public ASnakeGameModeBase
 {
@@ -27,5 +28,4 @@ protected:
 	void PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Score);
 	UFUNCTION()
 	virtual void PlayerDeath(ARollaBallPlayer* PlayerActor) override;
-	
 };

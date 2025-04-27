@@ -60,4 +60,5 @@ protected:
 
 public:
 	int GetTailLength();
+	int GetTailIncrement();
 };

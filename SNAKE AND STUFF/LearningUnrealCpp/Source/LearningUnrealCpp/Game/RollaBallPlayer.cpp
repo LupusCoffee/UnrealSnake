@@ -152,7 +152,6 @@ void ARollaBallPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	if (HitDirection > 0) JumpCount = 0;
 }
 
-
 //Interfaces
 UTail_Component* ARollaBallPlayer::GetTailComponent_Implementation()
 {

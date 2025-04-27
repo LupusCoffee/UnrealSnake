@@ -64,6 +64,11 @@ int UTail_Component::GetTailLength()
 	return CurrentLength;
 }
 
+int UTail_Component::GetTailIncrement()
+{
+	return TailIncrement;
+}
+
 void UTail_Component::AddTail()
 {
 	if (!TailActorToSpawn)
