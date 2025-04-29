@@ -7,6 +7,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "SnakeGameModeBase.generated.h"
 
+class USnakeGameInstance;
+
 UCLASS()
 class LEARNINGUNREALCPP_API ASnakeGameModeBase : public AGameModeBase
 {
@@ -16,5 +18,9 @@ public:
 	virtual void BeginPlay() override;
 	
 protected:
+	UPROPERTY()
+	USnakeGameInstance* GameInstance;
+	
 	virtual void PlayerDeath(ARollaBallPlayer* PlayerActor);
+	virtual void PlayerSpawned(ARollaBallPlayer* PlayerActor);
 };

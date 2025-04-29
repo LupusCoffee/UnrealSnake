@@ -2,26 +2,27 @@
 
 
 #include "SnakeGameModeBase.h"
+#include "SnakeGameInstance.h"
 #include "PlayerStateBase.h"
 
 void ASnakeGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	//do this on a "HighScoreGameMode" class
-	//find the high score game state, set it to the "game state"
-	//do this on a "BattleGameMode" class
-	//find the battle game state, set it to the "game state"
-
-	//the two types of game mode will inherit from THIS class!
-
-	//then...
-	//GameState->OnPlayerDeathEvent.AddDynamic(this, &ThisClass::PlayerDeath);
+	GameInstance = GetGameInstance<USnakeGameInstance>();
+		
+	//reset game instance stuff
+	
+	//todo: add death and stuff here instead of highscore and battle game modes > since it happens for both
 }
 
 void ASnakeGameModeBase::PlayerDeath(ARollaBallPlayer* PlayerActor)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red,
 	TEXT("A Player Died!"));
+}
+
+void ASnakeGameModeBase::PlayerSpawned(ARollaBallPlayer* PlayerActor)
+{
+	
 }

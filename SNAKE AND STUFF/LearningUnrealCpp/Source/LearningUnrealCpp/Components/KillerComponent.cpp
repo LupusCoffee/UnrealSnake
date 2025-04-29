@@ -73,6 +73,7 @@ void UKillerComponent::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedComp
 void UKillerComponent::OnColliderHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
+	
 	if (OtherActor->Implements<UKillableInterface>())
 		IKillableInterface::Execute_Kill(OtherActor);
 }

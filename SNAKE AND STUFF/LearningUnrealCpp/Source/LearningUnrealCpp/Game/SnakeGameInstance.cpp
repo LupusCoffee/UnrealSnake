@@ -3,22 +3,35 @@
 
 #include "SnakeGameInstance.h"
 
-void USnakeGameInstance::SetHighestScore(int Score)
-{
-	HighestScore = Score;
-}
+class ARollaBallPlayer;
 
-void USnakeGameInstance::SetWinningPlayer(ARollaBallPlayer* Player)
-{
-	WinningPlayer = Player;
-}
 
 int USnakeGameInstance::GetHighestScore()
 {
 	return HighestScore;
 }
 
-ARollaBallPlayer* USnakeGameInstance::GetWinningPlayer()
+FString USnakeGameInstance::GetWinningPlayerName()
 {
-	return WinningPlayer;
+	return WinningPlayerName;
+}
+
+int USnakeGameInstance::GetAmountOfPlayers()
+{
+	return AmountOfPlayers;
+}
+
+void USnakeGameInstance::SetHighestScore(int Score)
+{
+	HighestScore = Score;
+}
+
+void USnakeGameInstance::SetWinningPlayerName(FString Name)
+{
+	WinningPlayerName = Name;
+}
+
+void USnakeGameInstance::ResetHighScore()
+{
+	HighestScore = DefaultHighestScore;
 }

@@ -2,6 +2,7 @@
 
 #include "HighScoreGameState.h"
 
+#include "HighScorePlayerState.h"
 #include "GameFramework/Character.h"
 
 int AHighScoreGameState::GetHighestScore()
@@ -29,9 +30,19 @@ float AHighScoreGameState::GetRespawnTime()
 	return RespawnTime;
 }
 
+TArray<ARollaBallPlayer*> AHighScoreGameState::GetCurrentPlayers()
+{
+	return CurrentPlayers;
+}
+
 TArray<FPlayerToRespawn> AHighScoreGameState::GetPlayersToRespawn()
 {
 	return PlayersToRespawn;
+}
+
+TArray<FString> AHighScoreGameState::GetPossiblePlayerNames()
+{
+	return PossiblePlayerNames;
 }
 
 void AHighScoreGameState::SetHighestScore(int Score)
@@ -47,6 +58,22 @@ void AHighScoreGameState::SetWinningPlayer(ARollaBallPlayer* Player)
 void AHighScoreGameState::SetCurrentTime(float time)
 {
 	CurrentTime = time;
+}
+
+void AHighScoreGameState::AddCurrentPlayer(ARollaBallPlayer* Player)
+{
+	if (!Player) return;
+	
+	for (auto CurrentPlayer : CurrentPlayers)
+	{
+		if (CurrentPlayer == Player) return;
+	}
+	CurrentPlayers.Add(Player);
+}
+
+void AHighScoreGameState::RemoveCurrentPlayer(ARollaBallPlayer* Player)
+{
+	if (Player) CurrentPlayers.Remove(Player);
 }
 
 void AHighScoreGameState::AddPlayerToRespawn(AController* Controller, UClass* Class)
@@ -89,4 +116,6 @@ void AHighScoreGameState::RespawnPlayer(FPlayerToRespawn Respawnee)
 	//RespawneeActor->Execute_GetTailComponent(RespawneeActor)->AddTail();
 	
 	Respawnee.Controller->Possess(RespawneeActor);
+	Respawnee.Controller->GetPlayerState<AHighScorePlayerState>()->SetPlayerPawn(RespawneeActor);
+	int t = 1;
 }

@@ -3,26 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../SnakeGameModeBase.h"
-#include "HighScoreGameMode.generated.h"
+#include "LearningUnrealCpp/Game/SnakeGameModeBase.h"
+#include "BattleGameMode.generated.h"
 
 class USnakeGameInstance;
-class AHighScoreGameState;
+class ABattleGameState;
+/**
+there's a "battle" game mode where players try to kill each other
 
+the last standing player wins
 
+when the game is done, the winning player is displayed
+
+this game mode can only be won if there is more than one player
+ */
 UCLASS()
-class LEARNINGUNREALCPP_API AHighScoreGameMode : public ASnakeGameModeBase
+class LEARNINGUNREALCPP_API ABattleGameMode : public ASnakeGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AHighScoreGameMode();
+	ABattleGameMode();
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 	
 protected:
 	UPROPERTY()
-	AHighScoreGameState* HighScoreGameState;
+	ABattleGameState* BattleGameState;
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayers();
@@ -32,6 +38,4 @@ protected:
 	virtual void PlayerSpawned(ARollaBallPlayer* PlayerActor) override;
 	UFUNCTION()
 	virtual void PlayerDeath(ARollaBallPlayer* PlayerActor) override;
-	UFUNCTION()
-	void PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Score);
 };

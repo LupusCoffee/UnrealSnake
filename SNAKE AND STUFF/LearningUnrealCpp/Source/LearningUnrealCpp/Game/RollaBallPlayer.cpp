@@ -8,6 +8,8 @@
 #include "Components/PointLightComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
+#include "HighScoreMode/HighScorePlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Components/PlayerTailComponent.h"
 
 // Sets default values
@@ -50,12 +52,36 @@ void ARollaBallPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SnakePlayerState = GetPlayerState<APlayerStateBase>(); //is there a better way than this? should i maybe not, since there is already one in APawn?
+	//Delay a bit
+	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ARollaBallPlayer::DelayGettingPlayerState, 1.0, false);	
 	
 	//so we work with smaller values when setting move and jump force
 	MoveForce *= Mesh->GetMass();
 	JumpForce *= Mesh->GetMass();
 	GravityForce *= Mesh->GetMass();
+
+	//Set random name lol - i'd like to do this through the game mode and game state to prevent duplicates, but got no time
+	SetName(PossiblePlayerNames[rand() % PossiblePlayerNames.Num()]);
+	//TODO: ACTUALLY. I'd like to skip names all together and just set the color randomly. Again through game mode tho to prevent duplicate colors.
+
+	//Broadcast Player Spawn
+	AGameStateBase* GameState = UGameplayStatics::GetGameState(GetWorld());
+	if (GameState)
+	{
+		AHighScoreGameState* HighScoreGameState = Cast<AHighScoreGameState>(GameState);
+		if (HighScoreGameState) HighScoreGameState->OnPlayerSpawn.Broadcast(this);
+	}
+}
+
+void ARollaBallPlayer::DelayGettingPlayerState()
+{
+	// Once we've called this function enough times, clear the Timer.
+	if (--RepeatingCallsRemaining <= 0)
+	{
+		GetWorldTimerManager().ClearTimer(MemberTimerHandle);
+		// MemberTimerHandle can now be reused for any other Timer.
+	}
+	SnakePlayerState = GetPlayerState<APlayerStateBase>();
 }
 
 void ARollaBallPlayer::Tick(float DeltaTime)
@@ -93,8 +119,8 @@ inline void ARollaBallPlayer::RotateCamera(const FInputActionValue& Value)
 	FVector2D CameraInput = Value.Get<FVector2D>();
 
 	//rotate both spring arms, since the second spring arm doesn't inherit the rotation of their parents
-	SpringArm->AddLocalRotation(FRotator(0, CameraInput.X, 0));
-	SpringArm2->AddLocalRotation(FRotator(0, CameraInput.X,0)); //camera is its child
+	SpringArm->AddLocalRotation(FRotator(0, CameraInput.X*CameraForce, 0));
+	SpringArm2->AddLocalRotation(FRotator(0, CameraInput.X*CameraForce,0)); //camera is its child
 }
 
 void ARollaBallPlayer::MoveRight(const FInputActionValue& Value)
@@ -150,6 +176,17 @@ void ARollaBallPlayer::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 	//The further above us the hit, the closer to -1 the HitDirection.
 	const float HitDirection = Hit.Normal.Z;
 	if (HitDirection > 0) JumpCount = 0;
+}
+
+FString ARollaBallPlayer::GetName()
+{
+	if (PlayerName == "") return FString("None"); 
+	return PlayerName;
+}
+
+void ARollaBallPlayer::SetName(FString Name)
+{
+	PlayerName = Name;
 }
 
 //Interfaces

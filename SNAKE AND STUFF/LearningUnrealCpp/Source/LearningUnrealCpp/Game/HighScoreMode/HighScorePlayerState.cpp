@@ -14,7 +14,7 @@ void AHighScorePlayerState::BeginPlay()
 	AGameStateBase* GameState = UGameplayStatics::GetGameState(GetWorld());
 	if (GameState) HighScoreGameState = Cast<AHighScoreGameState>(GameState);
 	
-	if (GetPawn()) PlayerPawn = Cast<ARollaBallPlayer>(GetPawn());
+	if (GetPawn()) PlayerPawn = Cast<ARollaBallPlayer>(GetPawn()); //hmmmmmmmmm
 
 	//bindings
 	if (HighScoreGameState)
@@ -38,4 +38,14 @@ void AHighScorePlayerState::SetDeathStatus(bool DeathStatus)
 	if (!DeathStatus) return;
 	if (PlayerPawn && HighScoreGameState)
 		HighScoreGameState->OnPlayerDeathEvent.Broadcast(PlayerPawn);
+}
+
+void AHighScorePlayerState::SetPlayerPawn(ARollaBallPlayer* Pawn)
+{
+	if (GetPawn()) PlayerPawn = Cast<ARollaBallPlayer>(GetPawn());
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, "NO PLAYER PAWN");
+		PlayerPawn = Pawn;
+	}
 }

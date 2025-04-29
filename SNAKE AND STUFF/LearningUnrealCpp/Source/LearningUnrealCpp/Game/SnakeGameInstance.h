@@ -6,21 +6,26 @@
 #include "Engine/GameInstance.h"
 #include "SnakeGameInstance.generated.h"
 
-/**
- * 
- */
+class ARollaBallPlayer;
+
 UCLASS()
 class LEARNINGUNREALCPP_API USnakeGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
 protected:
+	int DefaultHighestScore = 0;
 	int HighestScore;
-	UPROPERTY() ARollaBallPlayer* WinningPlayer;
+	FString WinningPlayerName;
+	UPROPERTY(EditDefaultsOnly) int AmountOfPlayers = 2;
 
 public:
-	UFUNCTION() void SetHighestScore(int Score);
-	UFUNCTION() void SetWinningPlayer(ARollaBallPlayer* Player);
 	UFUNCTION(BlueprintCallable) int GetHighestScore();
-	UFUNCTION(BlueprintCallable) ARollaBallPlayer* GetWinningPlayer();
+	UFUNCTION(BlueprintCallable) FString GetWinningPlayerName();
+	UFUNCTION(BlueprintCallable) int GetAmountOfPlayers();
+
+	UFUNCTION() void SetHighestScore(int Score);
+	UFUNCTION() void SetWinningPlayerName(FString Name);
+
+	UFUNCTION() void ResetHighScore();
 };

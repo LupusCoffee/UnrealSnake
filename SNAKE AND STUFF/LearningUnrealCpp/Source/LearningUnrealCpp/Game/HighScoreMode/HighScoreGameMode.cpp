@@ -2,8 +2,8 @@
 
 
 #include "HighScoreGameMode.h"
-
 #include "HighScoreGameState.h"
+#include "HighScorePlayerState.h"
 #include "../SnakeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -19,12 +19,16 @@ void AHighScoreGameMode::BeginPlay()
 	Super::BeginPlay();
 	
 	HighScoreGameState = GetGameState<AHighScoreGameState>();
-	HighScoreGameState->SetCurrentTime(HighScoreGameState->GetGameLength());
 	if (HighScoreGameState)
 	{
-		HighScoreGameState->OnPlayerGotPoints.AddDynamic(this, &ThisClass::AHighScoreGameMode::PlayerGotPoints);
+		HighScoreGameState->SetCurrentTime(HighScoreGameState->GetGameLength()); //maybe make a seperate function in game state for this lol
+		HighScoreGameState->OnPlayerSpawn.AddDynamic(this, &ThisClass::PlayerSpawned);
 		HighScoreGameState->OnPlayerDeathEvent.AddDynamic(this, &ThisClass::PlayerDeath);
+		HighScoreGameState->OnPlayerGotPoints.AddDynamic(this, &ThisClass::AHighScoreGameMode::PlayerGotPoints);
 	}
+
+	//Game instance stuff
+	if (GameInstance) GameInstance->ResetHighScore();
 }
 
 
@@ -37,23 +41,24 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 	//tick respawn time for players that need respawning
 	HighScoreGameState->PlayersRespawnTick(DeltaTime);
 
+	//TODO: put this into a function of its own
 	//End Game
 	HighScoreGameState->SetCurrentTime(HighScoreGameState->GetCurrentTime() - DeltaTime);
 	if (HighScoreGameState->GetCurrentTime() < 0)
 	{
-		//TODO: do this shit instead:
-		//- pause game
-		//- show widget
-		
 		//TODO: set state to outro
 		
-		USnakeGameInstance* GameInstance = GetGameInstance<USnakeGameInstance>();
 		if (GameInstance)
 		{
 			GameInstance->SetHighestScore(HighScoreGameState->GetHighestScore());
-			GameInstance->SetWinningPlayer(HighScoreGameState->GetWinningPlayer());
+			GameInstance->SetWinningPlayerName(HighScoreGameState->GetWinningPlayer()->GetName());
 
-			//gotta do summin about the players still being there
+			//Remove all players - although, doesn't include the first player.... hmnmmmmmm
+			for (auto Player : HighScoreGameState->GetCurrentPlayers())
+			{
+				HighScoreGameState->RemoveCurrentPlayer(Player);
+				Player->Destroy();
+			}
 			
 			UGameplayStatics::OpenLevel(GameInstance, FName(TEXT("HighScoreResults"))); //TODO: use an enum for map names
 		}
@@ -67,13 +72,39 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 	//TODO: update a widget for all players to see the timer
 }
 
-void AHighScoreGameMode::PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Score)
+void AHighScoreGameMode::SpawnPlayers()
 {
-	if (HighScoreGameState->GetHighestScore() < Score)
+	//TODO: delay a bit before each creation
+	if (GameInstance && GameInstance->GetAmountOfPlayers() > 1)
 	{
-		HighScoreGameState->SetWinningPlayer(PlayerActor);
-		HighScoreGameState->SetHighestScore(Score);
+		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
+		{
+			FString Test = FString("Test");
+			ULocalPlayer* localPlayer = GameInstance->CreateLocalPlayer(-1, Test, true);
+
+			//ugh
+			if (!localPlayer) break;
+			
+			AHighScorePlayerState* PlayerState = localPlayer->GetPlayerController(GetWorld())->GetPlayerState<AHighScorePlayerState>();
+			if (!PlayerState) break;
+
+			ARollaBallPlayer* PlayerActor = nullptr;
+			APawn* PlayerPawn = localPlayer->GetPlayerController(GetWorld())->GetPawn();
+			if (PlayerPawn) PlayerActor = Cast<ARollaBallPlayer>(PlayerPawn);
+			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
+		}
 	}
+}
+
+//Bound Functions
+void AHighScoreGameMode::PlayerSpawned(ARollaBallPlayer* PlayerActor)
+{
+	Super::PlayerSpawned(PlayerActor);
+	
+	if (PlayerActor && HighScoreGameState)
+		HighScoreGameState->AddCurrentPlayer(PlayerActor);
+
+	//TODO: set name
 }
 
 void AHighScoreGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
@@ -81,10 +112,19 @@ void AHighScoreGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
 	Super::PlayerDeath(PlayerActor);
 	
 	if (!HighScoreGameState) return;
-
-	//int TailLength = PlayerActor->GetTailComponent()->GetTailLength()/PlayerActor->GetTailComponent()->GetTailIncrement();
+	
 	HighScoreGameState->AddPlayerToRespawn(PlayerActor->GetController(), PlayerActor->GetClass());
 
-	//TODO: fix why this isn't working again after a respawn
+	//Destroy
+	HighScoreGameState->RemoveCurrentPlayer(PlayerActor);
 	PlayerActor->Destroy();
+}
+
+void AHighScoreGameMode::PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Score)
+{
+	if (HighScoreGameState->GetHighestScore() < Score)
+	{
+		HighScoreGameState->SetWinningPlayer(PlayerActor);
+		HighScoreGameState->SetHighestScore(Score);
+	}
 }

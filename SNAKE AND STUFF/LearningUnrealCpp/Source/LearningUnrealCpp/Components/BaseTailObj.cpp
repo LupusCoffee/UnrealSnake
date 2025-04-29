@@ -27,6 +27,11 @@ void ABaseTailObj::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!GetOwner())
+	{
+		this->Destroy();
+		return;
+	}
 	ThisFramePosition = GetOwner()->GetActorLocation();
 	Direction = FVector
 	(

@@ -70,6 +70,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float GravityForce = 3000.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CameraForce;
+
+	UPROPERTY()
+	FString PlayerName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FString> PossiblePlayerNames;
+
 	// INPUTS //
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UInputMappingContext* InputMapping;
@@ -79,6 +87,9 @@ protected:
 	//Network Shiz
 	UPROPERTY()
 	APlayerStateBase* SnakePlayerState;
+	int RepeatingCallsRemaining;
+	FTimerHandle MemberTimerHandle;
+	void DelayGettingPlayerState();
 
 public:
 	// Called to bind functionality to input
@@ -98,6 +109,9 @@ private:
 
 	int32 JumpCount = 0;
 
+public:
+	UFUNCTION(BlueprintCallable) FString GetName();
+	UFUNCTION(BlueprintCallable) void SetName(FString Name);
 	
 public:
 	//Interfaces
