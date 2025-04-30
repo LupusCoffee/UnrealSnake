@@ -2,6 +2,8 @@
 
 
 #include "BattlePlayerState.h"
+
+#include "BattleGameState.h"
 #include "Kismet/GameplayStatics.h"
 
 void ABattlePlayerState::BeginPlay()
@@ -9,7 +11,7 @@ void ABattlePlayerState::BeginPlay()
 	Super::BeginPlay();
 
 	AGameStateBase* GameState = UGameplayStatics::GetGameState(GetWorld());
-	if (GameState) HighScoreGameState = Cast<AHighScoreGameState>(GameState);
+	if (GameState) BattleGameState = Cast<ABattleGameState>(GameState);
 	
 	if (GetPawn()) PlayerPawn = Cast<ARollaBallPlayer>(GetPawn()); //hmmmmmmmmm
 }
@@ -19,8 +21,8 @@ void ABattlePlayerState::SetDeathStatus(bool DeathStatus)
 	Super::SetDeathStatus(DeathStatus);
 
 	if (!DeathStatus) return;
-	if (PlayerPawn && HighScoreGameState)
-		HighScoreGameState->OnPlayerDeathEvent.Broadcast(PlayerPawn);
+	if (PlayerPawn && BattleGameState)
+		BattleGameState->OnPlayerDeathEvent.Broadcast(PlayerPawn);
 }
 
 void ABattlePlayerState::SetPlayerPawn(ARollaBallPlayer* Pawn)

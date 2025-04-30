@@ -4,6 +4,7 @@
 #include "BattleGameMode.h"
 #include "BattleGameState.h"
 #include "BattlePlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Game/SnakeGameInstance.h"
 
 ABattleGameMode::ABattleGameMode(): BattleGameState(nullptr)
@@ -68,10 +69,25 @@ void ABattleGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
 	BattleGameState->RemovePlayer(PlayerActor);
 	PlayerActor->Destroy();
 
+	//Check to end game + end game if needed - THERE SHOULD BE A FUNCTION FOR THIS BUT AAAAAAAAAAHHHHHHHHHHHHHHHH
 	if (BattleGameState->GetPlayersLeft().Num() <= 1)
 	{
-		//end game
-		//- remove all players left
-		//- change map
+		if (!GameInstance) return;
+		
+		if (BattleGameState->GetPlayersLeft().IsEmpty())
+		{
+			GameInstance->SetWinningPlayerName(TEXT("NONE NOPE NADA HAHAHAHA"));
+			UGameplayStatics::OpenLevel(GameInstance, FName(TEXT("BattleResults"))); //TODO: use an enum for map names
+		}
+		else
+		{
+			GameInstance->SetWinningPlayerName(BattleGameState->GetPlayersLeft()[0]->GetName());
+			for (auto Player : BattleGameState->GetPlayersLeft())
+			{
+				BattleGameState->RemovePlayer(Player);
+				Player->Destroy();
+			}
+			UGameplayStatics::OpenLevel(GameInstance, FName(TEXT("BattleResults"))); //TODO: use an enum for map names
+		}
 	}
 }

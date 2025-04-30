@@ -40,11 +40,6 @@ TArray<FPlayerToRespawn> AHighScoreGameState::GetPlayersToRespawn()
 	return PlayersToRespawn;
 }
 
-TArray<FString> AHighScoreGameState::GetPossiblePlayerNames()
-{
-	return PossiblePlayerNames;
-}
-
 void AHighScoreGameState::SetHighestScore(int Score)
 {
 	HighestScore = Score;

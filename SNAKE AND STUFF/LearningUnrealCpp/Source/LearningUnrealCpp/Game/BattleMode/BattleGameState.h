@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "LearningUnrealCpp/Game/HighScoreMode/HighScoreGameState.h"
 #include "BattleGameState.generated.h"
 
 class ARollaBallPlayer;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerSpawnEvent, ARollaBallPlayer*, PlayerActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDeathEvent, ARollaBallPlayer*, PlayerActor);
 
 UCLASS()
 class LEARNINGUNREALCPP_API ABattleGameState : public AGameStateBase
@@ -17,7 +15,7 @@ class LEARNINGUNREALCPP_API ABattleGameState : public AGameStateBase
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<ARollaBallPlayer*> PlayersLeft;
 
 public:

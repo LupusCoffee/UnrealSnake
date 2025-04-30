@@ -6,9 +6,8 @@
 #include "LearningUnrealCpp/Game/PlayerStateBase.h"
 #include "BattlePlayerState.generated.h"
 
-/**
- * 
- */
+class ABattleGameState;
+
 UCLASS()
 class LEARNINGUNREALCPP_API ABattlePlayerState : public APlayerStateBase
 {
@@ -19,7 +18,7 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere)
-	AHighScoreGameState* HighScoreGameState;
+	ABattleGameState* BattleGameState;
 	UPROPERTY(VisibleAnywhere)
 	ARollaBallPlayer* PlayerPawn;
 

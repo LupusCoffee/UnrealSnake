@@ -17,7 +17,7 @@ protected:
 	int DefaultHighestScore = 0;
 	int HighestScore;
 	FString WinningPlayerName;
-	UPROPERTY(EditDefaultsOnly) int AmountOfPlayers = 2;
+	UPROPERTY(EditDefaultsOnly) int AmountOfPlayers = 1;
 
 public:
 	UFUNCTION(BlueprintCallable) int GetHighestScore();

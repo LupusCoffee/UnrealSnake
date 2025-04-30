@@ -13,8 +13,8 @@
 
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerSpawnEvent2, ARollaBallPlayer*, PlayerActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDeathEvent2, ARollaBallPlayer*, PlayerActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerSpawnEvent, ARollaBallPlayer*, PlayerActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPlayerDeathEvent, ARollaBallPlayer*, PlayerActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FPlayerGotPoints, ARollaBallPlayer*, PlayerActor, int, Score);
 
 USTRUCT()
@@ -70,13 +70,12 @@ protected:
 	float CurrentTime;
 	UPROPERTY(EditDefaultsOnly) float RespawnTime;
 	UPROPERTY(EditDefaultsOnly) FVector RespawnLocation;
-	UPROPERTY(EditDefaultsOnly) TArray<FString> PossiblePlayerNames;
 	
 public:
 	UPROPERTY(BlueprintAssignable, Category = "PlayerEvents")
-	FPlayerSpawnEvent2 OnPlayerSpawn;
+	FPlayerSpawnEvent OnPlayerSpawn;
 	UPROPERTY(BlueprintAssignable, Category = "PlayerEvents")
-	FPlayerDeathEvent2 OnPlayerDeathEvent;
+	FPlayerDeathEvent OnPlayerDeathEvent;
 	UPROPERTY(BlueprintAssignable, Category = "PlayerEvents")
 	FPlayerGotPoints OnPlayerGotPoints;
 
@@ -92,7 +91,6 @@ public:
 	UFUNCTION() float GetRespawnTime();
 	UFUNCTION() TArray<ARollaBallPlayer*> GetCurrentPlayers();
 	UFUNCTION() TArray<FPlayerToRespawn> GetPlayersToRespawn();
-	UFUNCTION() TArray<FString> GetPossiblePlayerNames();
 	
 	UFUNCTION() void SetHighestScore(int Score);
 	UFUNCTION()	void SetWinningPlayer(ARollaBallPlayer* Player);

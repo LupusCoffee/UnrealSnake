@@ -3,6 +3,7 @@
 #include "RollaBallPlayer.h"
 #include "Input/BaseMovementDataConfig.h"
 #include "PlayerStateBase.h"
+#include "BattleMode/BattleGameState.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
@@ -70,6 +71,9 @@ void ARollaBallPlayer::BeginPlay()
 	{
 		AHighScoreGameState* HighScoreGameState = Cast<AHighScoreGameState>(GameState);
 		if (HighScoreGameState) HighScoreGameState->OnPlayerSpawn.Broadcast(this);
+
+		ABattleGameState* BattleGameState = Cast<ABattleGameState>(GameState);
+		if (BattleGameState) BattleGameState->OnPlayerSpawn.Broadcast(this);
 	}
 }
 
