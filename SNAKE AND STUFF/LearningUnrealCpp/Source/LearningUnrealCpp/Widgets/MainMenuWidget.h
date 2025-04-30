@@ -6,9 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenuWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class LEARNINGUNREALCPP_API UMainMenuWidget : public UUserWidget
 {

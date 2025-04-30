@@ -28,4 +28,7 @@ public:
 	UFUNCTION() void SetWinningPlayerName(FString Name);
 
 	UFUNCTION() void ResetHighScore();
+
+	UFUNCTION(BlueprintCallable)
+	void PlayGame(bool IsHighScoreMode, FString MapNum, int PlayerAmount, int AiAmount);
 };

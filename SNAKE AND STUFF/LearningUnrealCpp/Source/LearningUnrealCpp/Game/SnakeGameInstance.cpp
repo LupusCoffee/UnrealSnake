@@ -2,6 +2,7 @@
 
 
 #include "SnakeGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 class ARollaBallPlayer;
 
@@ -34,4 +35,13 @@ void USnakeGameInstance::SetWinningPlayerName(FString Name)
 void USnakeGameInstance::ResetHighScore()
 {
 	HighestScore = DefaultHighestScore;
+}
+
+void USnakeGameInstance::PlayGame(bool IsHighScoreMode, FString MapNum, int PlayerAmount, int AiAmount)
+{
+	AmountOfPlayers = PlayerAmount;
+	//TODO: set ai amount too
+	
+	if (IsHighScoreMode) UGameplayStatics::OpenLevel(this, FName("HighScoreMap" + MapNum));
+	else UGameplayStatics::OpenLevel(this, FName("BattleMap" + MapNum));
 }
