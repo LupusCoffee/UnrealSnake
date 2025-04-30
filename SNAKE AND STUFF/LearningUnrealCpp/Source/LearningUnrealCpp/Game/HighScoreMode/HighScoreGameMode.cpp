@@ -50,16 +50,22 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 		
 		if (GameInstance)
 		{
+			//Set winning player and their score
 			GameInstance->SetHighestScore(HighScoreGameState->GetHighestScore());
-			GameInstance->SetWinningPlayerName(HighScoreGameState->GetWinningPlayer()->GetName());
+			ARollaBallPlayer* WinningPlayer = HighScoreGameState->GetWinningPlayer();
+			if (WinningPlayer) GameInstance->SetWinningPlayerName(WinningPlayer->GetName());
 
 			//Remove all players - although, doesn't include the first player.... hmnmmmmmm
+			for (auto _LocalPlayer : HighScoreGameState->GetLocalPlayers())
+				GameInstance->RemoveLocalPlayer(_LocalPlayer);
+			HighScoreGameState->RemoveAllLocalPlayers();
 			for (auto Player : HighScoreGameState->GetCurrentPlayers())
 			{
 				HighScoreGameState->RemoveCurrentPlayer(Player);
 				Player->Destroy();
 			}
-			
+
+			//Switch map
 			UGameplayStatics::OpenLevel(GameInstance, FName(TEXT("HighScoreResults"))); //TODO: use an enum for map names
 		}
 		else
@@ -80,16 +86,17 @@ void AHighScoreGameMode::SpawnPlayers()
 		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
 		{
 			FString Test = FString("Test");
-			ULocalPlayer* localPlayer = GameInstance->CreateLocalPlayer(-1, Test, true);
+			ULocalPlayer* LocalPlayer = GameInstance->CreateLocalPlayer(-1, Test, true);
 
 			//ugh
-			if (!localPlayer) break;
+			if (!LocalPlayer) break;
+			if (HighScoreGameState) HighScoreGameState->AddLocalPlayer(LocalPlayer);
 			
-			AHighScorePlayerState* PlayerState = localPlayer->GetPlayerController(GetWorld())->GetPlayerState<AHighScorePlayerState>();
+			AHighScorePlayerState* PlayerState = LocalPlayer->GetPlayerController(GetWorld())->GetPlayerState<AHighScorePlayerState>();
 			if (!PlayerState) break;
 
 			ARollaBallPlayer* PlayerActor = nullptr;
-			APawn* PlayerPawn = localPlayer->GetPlayerController(GetWorld())->GetPawn();
+			APawn* PlayerPawn = LocalPlayer->GetPlayerController(GetWorld())->GetPawn();
 			if (PlayerPawn) PlayerActor = Cast<ARollaBallPlayer>(PlayerPawn);
 			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
 		}

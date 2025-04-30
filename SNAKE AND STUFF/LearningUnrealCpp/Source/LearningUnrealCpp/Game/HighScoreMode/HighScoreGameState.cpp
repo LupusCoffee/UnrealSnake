@@ -2,6 +2,7 @@
 
 #include "HighScoreGameState.h"
 
+#include "HeadMountedDisplayTypes.h"
 #include "HighScorePlayerState.h"
 #include "GameFramework/Character.h"
 
@@ -113,4 +114,23 @@ void AHighScoreGameState::RespawnPlayer(FPlayerToRespawn Respawnee)
 	Respawnee.Controller->Possess(RespawneeActor);
 	Respawnee.Controller->GetPlayerState<AHighScorePlayerState>()->SetPlayerPawn(RespawneeActor);
 	int t = 1;
+}
+
+TArray<ULocalPlayer*> AHighScoreGameState::GetLocalPlayers()
+{
+	return LocalPlayers;
+}
+
+void AHighScoreGameState::AddLocalPlayer(ULocalPlayer* LocalPlayer)
+{
+	for (auto Player : LocalPlayers)
+		if (Player == LocalPlayer) return;
+
+	LocalPlayers.Add(LocalPlayer);
+}
+
+void AHighScoreGameState::RemoveAllLocalPlayers()
+{
+	for (auto Player : LocalPlayers)
+		LocalPlayers.Remove(Player);
 }

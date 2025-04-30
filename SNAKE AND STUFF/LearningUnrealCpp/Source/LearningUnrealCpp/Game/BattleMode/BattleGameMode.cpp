@@ -33,16 +33,17 @@ void ABattleGameMode::SpawnPlayers()
 		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
 		{
 			FString Test = FString("Test");
-			ULocalPlayer* localPlayer = GameInstance->CreateLocalPlayer(-1, Test, true);
-
-			//ugh
-			if (!localPlayer) break;
+			ULocalPlayer* LocalPlayer = GameInstance->CreateLocalPlayer(-1, Test, true);
 			
-			ABattlePlayerState* PlayerState = localPlayer->GetPlayerController(GetWorld())->GetPlayerState<ABattlePlayerState>();
+			//ugh
+			if (!LocalPlayer) break;
+			if (BattleGameState) BattleGameState->AddLocalPlayer(LocalPlayer);
+			
+			ABattlePlayerState* PlayerState = LocalPlayer->GetPlayerController(GetWorld())->GetPlayerState<ABattlePlayerState>();
 			if (!PlayerState) break;
 
 			ARollaBallPlayer* PlayerActor = nullptr;
-			APawn* PlayerPawn = localPlayer->GetPlayerController(GetWorld())->GetPawn();
+			APawn* PlayerPawn = LocalPlayer->GetPlayerController(GetWorld())->GetPawn();
 			if (PlayerPawn) PlayerActor = Cast<ARollaBallPlayer>(PlayerPawn);
 			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
 		}
@@ -73,6 +74,11 @@ void ABattleGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
 	if (BattleGameState->GetPlayersLeft().Num() <= 1)
 	{
 		if (!GameInstance) return;
+
+		//remove all local player
+		for (auto _LocalPlayer : BattleGameState->GetLocalPlayers())
+			GameInstance->RemoveLocalPlayer(_LocalPlayer);
+		BattleGameState->RemoveAllLocalPlayers();
 		
 		if (BattleGameState->GetPlayersLeft().IsEmpty())
 		{

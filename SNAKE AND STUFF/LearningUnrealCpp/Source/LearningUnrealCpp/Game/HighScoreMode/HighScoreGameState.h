@@ -81,6 +81,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<ARollaBallPlayer*> CurrentPlayers;
+	UPROPERTY(VisibleAnywhere)
+	TArray<ULocalPlayer*> LocalPlayers;
 	UPROPERTY()
 	TArray<FPlayerToRespawn> PlayersToRespawn;
 	
@@ -100,4 +102,8 @@ public:
 	UFUNCTION() void AddPlayerToRespawn(AController* Controller, UClass* Class);
 	UFUNCTION() void PlayersRespawnTick(float DeltaTime);
 	UFUNCTION() void RespawnPlayer(FPlayerToRespawn Respawnee);
+
+	UFUNCTION() TArray<ULocalPlayer*> GetLocalPlayers();
+	UFUNCTION() void AddLocalPlayer(ULocalPlayer* LocalPlayer);
+	UFUNCTION() void RemoveAllLocalPlayers();
 };

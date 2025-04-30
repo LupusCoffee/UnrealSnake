@@ -17,6 +17,8 @@ class LEARNINGUNREALCPP_API ABattleGameState : public AGameStateBase
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<ARollaBallPlayer*> PlayersLeft;
+	UPROPERTY(VisibleAnywhere)
+	TArray<ULocalPlayer*> LocalPlayers;
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "PlayerEvents")
@@ -31,4 +33,8 @@ public:
 	void AddPlayer(ARollaBallPlayer* _Player);
 	UFUNCTION()
 	void RemovePlayer(ARollaBallPlayer* _Player);
+
+	UFUNCTION() TArray<ULocalPlayer*> GetLocalPlayers();
+	UFUNCTION() void AddLocalPlayer(ULocalPlayer* LocalPlayer);
+	UFUNCTION() void RemoveAllLocalPlayers();
 };

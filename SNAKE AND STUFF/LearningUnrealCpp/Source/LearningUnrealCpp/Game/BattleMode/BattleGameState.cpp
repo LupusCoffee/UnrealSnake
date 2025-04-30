@@ -21,3 +21,22 @@ void ABattleGameState::RemovePlayer(ARollaBallPlayer* Player)
 {
 	PlayersLeft.Remove(Player);
 }
+
+TArray<ULocalPlayer*> ABattleGameState::GetLocalPlayers()
+{
+	return LocalPlayers;
+}
+
+void ABattleGameState::AddLocalPlayer(ULocalPlayer* LocalPlayer)
+{
+	for (auto Player : LocalPlayers)
+		if (Player == LocalPlayer) return;
+
+	LocalPlayers.Add(LocalPlayer);
+}
+
+void ABattleGameState::RemoveAllLocalPlayers()
+{
+	for (auto Player : LocalPlayers)
+		LocalPlayers.Remove(Player);
+}
