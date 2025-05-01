@@ -7,11 +7,12 @@
 #include "../SnakeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Game/StateControllerGameInstanceSubsystem.h"
+#include "LearningUnrealCpp/Game/Controllers/SnakeAiController.h"
 
 
 class UStateControllerGameInstanceSubsystem;
 
-AHighScoreGameMode::AHighScoreGameMode(): HighScoreGameState(nullptr)
+AHighScoreGameMode::AHighScoreGameMode(): HighScoreGameState(nullptr), SpawnedAIClass(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -89,7 +90,10 @@ void AHighScoreGameMode::SpawnPlayers()
 {
 	//Creates additional players, gives each a player state (as that doesn't get set automatically)
 	//Wish: i would have wanted to refactor the spawning a bit, since a lot of functions related to it are all over the place (but not time...............................!!!!)
-	if (GameInstance && GameInstance->GetAmountOfPlayers() > 1)
+	//Wish again: should have moved this to the base snake game mode
+	if (!GameInstance) return;
+	
+	if (GameInstance->GetAmountOfPlayers() > 1)
 	{
 		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
 		{
@@ -109,14 +113,30 @@ void AHighScoreGameMode::SpawnPlayers()
 			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
 		}
 	}
-
+	
+	if (!SpawnedAIClass) return;
 	//AI!!! Creates pawns, gives each a player state and an ai controller
-	if (GameInstance && GameInstance->GetAmountOfAi() > 1)
+	for (int i = 0; i < GameInstance->GetAmountOfAi(); i++)
 	{
-		for (int i = 0; i < GameInstance->GetAmountOfAi(); i++)
-		{
-			//Create ai
-		}
+		//Create ai
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = GetOwner();
+		SpawnParameters.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+		ARollaBallPlayer* SpawnedAI = GetWorld()->SpawnActor<ARollaBallPlayer>
+		(
+			SpawnedAIClass, //very bad and sloppy - would like to refactor
+			FVector(0,0,200),
+			FRotator::ZeroRotator,
+			SpawnParameters	
+		);
+
+		//create ai controller and possess
+		SpawnedAI->SpawnDefaultController();
+		SpawnedAI->GetController()->SetPawn(SpawnedAI);
+		if (!SpawnedAI->GetController<ASnakeAiController>()) return;
+		SpawnedAI->GetController<ASnakeAiController>()->InitializeCustomPlayerState();
 	}
 }
 

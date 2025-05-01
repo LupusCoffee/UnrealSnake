@@ -3,22 +3,44 @@
 
 #include "SnakeAiController.h"
 
+#include "LearningUnrealCpp/Game/BattleMode/BattlePlayerState.h"
+#include "LearningUnrealCpp/Game/HighScoreMode/HighScorePlayerState.h"
 
-// Sets default values
+
 ASnakeAiController::ASnakeAiController()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void ASnakeAiController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	//InitializeCustomPlayerState();
 }
 
-// Called every frame
+void ASnakeAiController::InitializeCustomPlayerState()
+{
+	InitPlayerState();
+	
+	ARollaBallPlayer* AIPlayer = GetPawn<ARollaBallPlayer>();
+	if (!AIPlayer) return;
+
+	AHighScorePlayerState* AIHighScorePlayerState = GetPlayerState<AHighScorePlayerState>();
+	if (AIHighScorePlayerState)
+	{
+		AIHighScorePlayerState->SetPlayerPawn(AIPlayer);
+		AIPlayer->SetPlayerState(AIHighScorePlayerState);
+	}
+	
+	ABattlePlayerState* AIBattlePlayerState = GetPlayerState<ABattlePlayerState>();
+	if (AIBattlePlayerState)
+	{
+		AIBattlePlayerState->SetPlayerPawn(AIPlayer);
+		AIPlayer->SetPlayerState(AIBattlePlayerState);
+	}
+}
+
 void ASnakeAiController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

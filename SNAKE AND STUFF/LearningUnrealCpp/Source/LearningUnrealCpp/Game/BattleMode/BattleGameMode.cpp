@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Game/SnakeGameInstance.h"
 #include "LearningUnrealCpp/Game/StateControllerGameInstanceSubsystem.h"
+#include "LearningUnrealCpp/Game/Controllers/SnakeAiController.h"
 
 class UStateControllerGameInstanceSubsystem;
 
@@ -37,7 +38,10 @@ void ABattleGameMode::BeginPlay()
 void ABattleGameMode::SpawnPlayers()
 {
 	//TODO: delay a bit before each creation
-	if (GameInstance && GameInstance->GetAmountOfPlayers() > 1)
+	
+	if (!GameInstance) return;
+	
+	if (GameInstance->GetAmountOfPlayers() > 1)
 	{
 		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
 		{
@@ -56,6 +60,31 @@ void ABattleGameMode::SpawnPlayers()
 			if (PlayerPawn) PlayerActor = Cast<ARollaBallPlayer>(PlayerPawn);
 			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
 		}
+	}
+
+	if (!SpawnedAIClass) return;
+	//AI!!! Creates pawns, gives each a player state and an ai controller
+	for (int i = 0; i < GameInstance->GetAmountOfAi(); i++)
+	{
+		//Create ai
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = GetOwner();
+		SpawnParameters.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+		ARollaBallPlayer* SpawnedAI = GetWorld()->SpawnActor<ARollaBallPlayer>
+		(
+			SpawnedAIClass, //very bad and sloppy - would like to refactor
+			FVector(0,0,200),
+			FRotator::ZeroRotator,
+			SpawnParameters	
+		);
+
+		//create ai controller and possess
+		SpawnedAI->SpawnDefaultController();
+		SpawnedAI->GetController()->SetPawn(SpawnedAI);
+		if (!SpawnedAI->GetController<ASnakeAiController>()) return;
+		SpawnedAI->GetController<ASnakeAiController>()->InitializeCustomPlayerState();
 	}
 }
 

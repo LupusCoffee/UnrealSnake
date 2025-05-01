@@ -29,6 +29,8 @@ public:
 protected:
 	UPROPERTY()
 	ABattleGameState* BattleGameState;
+	UPROPERTY(EditDefaultsOnly)
+	UClass* SpawnedAIClass;
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayers();

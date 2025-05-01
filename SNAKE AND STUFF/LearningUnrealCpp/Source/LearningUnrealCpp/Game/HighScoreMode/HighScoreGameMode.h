@@ -23,6 +23,8 @@ public:
 protected:
 	UPROPERTY()
 	AHighScoreGameState* HighScoreGameState;
+	UPROPERTY(EditDefaultsOnly)
+	UClass* SpawnedAIClass;
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayers();

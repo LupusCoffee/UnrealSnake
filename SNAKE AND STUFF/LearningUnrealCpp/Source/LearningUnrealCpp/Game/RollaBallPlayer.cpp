@@ -7,9 +7,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/PointLightComponent.h"
-#include "EnhancedInput/Public/EnhancedInputSubsystems.h"
-#include "EnhancedInput/Public/EnhancedInputComponent.h"
-#include "HighScoreMode/HighScorePlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Components/PlayerTailComponent.h"
 
@@ -62,7 +59,7 @@ void ARollaBallPlayer::BeginPlay()
 	GravityForce *= Mesh->GetMass();
 
 	//Set random name lol - i'd like to do this through the game mode and game state to prevent duplicates, but got no time
-	SetName(PossiblePlayerNames[rand() % PossiblePlayerNames.Num()]);
+	if (PossiblePlayerNames.Num() > 0) SetName(PossiblePlayerNames[rand() % PossiblePlayerNames.Num()]);
 	//TODO: ACTUALLY. I'd like to skip names all together and just set the color randomly. Again through game mode tho to prevent duplicate colors.
 
 	//Broadcast Player Spawn

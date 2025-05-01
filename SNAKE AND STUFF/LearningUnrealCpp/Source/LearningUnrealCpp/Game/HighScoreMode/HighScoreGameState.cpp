@@ -108,8 +108,6 @@ void AHighScoreGameState::RespawnPlayer(FPlayerToRespawn Respawnee)
 		FRotator::ZeroRotator,
 		SpawnParameters	
 	);
-
-	//RespawneeActor->Execute_GetTailComponent(RespawneeActor)->AddTail();
 	
 	Respawnee.Controller->Possess(RespawneeActor);
 	Respawnee.Controller->GetPlayerState<AHighScorePlayerState>()->SetPlayerPawn(RespawneeActor);
