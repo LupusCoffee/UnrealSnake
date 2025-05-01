@@ -26,6 +26,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnPlayers();
+	UFUNCTION()
+	void ResetHighScore();
 
 	//Bound Functions
 	UFUNCTION()

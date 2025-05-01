@@ -73,7 +73,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CameraForce;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	FString PlayerName;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FString> PossiblePlayerNames;

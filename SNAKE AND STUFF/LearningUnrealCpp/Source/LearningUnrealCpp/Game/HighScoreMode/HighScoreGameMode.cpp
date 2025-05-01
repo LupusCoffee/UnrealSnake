@@ -120,6 +120,23 @@ void AHighScoreGameMode::SpawnPlayers()
 	}
 }
 
+void AHighScoreGameMode::ResetHighScore()
+{
+	for (ARollaBallPlayer* Player : HighScoreGameState->GetCurrentPlayers())
+	{
+		if (!Player) continue;
+		if (!Player->GetPlayerState()) continue;
+		AHighScorePlayerState* PlayerState = Cast<AHighScorePlayerState>(Player->GetPlayerState());
+		if (!PlayerState) continue;
+
+		if (PlayerState->GetLengthScore() >= HighScoreGameState->GetHighestScore())
+		{
+			HighScoreGameState->SetHighestScore(PlayerState->GetLengthScore());
+			HighScoreGameState->SetWinningPlayer(Player);
+		}
+	}
+}
+
 //Bound Functions
 void AHighScoreGameMode::PlayerSpawned(ARollaBallPlayer* PlayerActor)
 {
@@ -137,9 +154,15 @@ void AHighScoreGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)
 	
 	HighScoreGameState->AddPlayerToRespawn(PlayerActor->GetController(), PlayerActor->GetClass());
 
+	//Remove from top if winning player - shoulda used a pointer to a struct for the top spot, containing the player and its score
+	if (PlayerActor == HighScoreGameState->GetWinningPlayer())
+		HighScoreGameState->SetHighestScore(0);
+	
 	//Destroy
 	HighScoreGameState->RemoveCurrentPlayer(PlayerActor);
 	PlayerActor->Destroy();
+
+	ResetHighScore();
 }
 
 void AHighScoreGameMode::PlayerGotPoints(ARollaBallPlayer* PlayerActor, int Score)
