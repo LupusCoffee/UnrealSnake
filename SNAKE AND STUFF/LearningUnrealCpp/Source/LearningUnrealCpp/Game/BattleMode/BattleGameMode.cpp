@@ -6,6 +6,9 @@
 #include "BattlePlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "LearningUnrealCpp/Game/SnakeGameInstance.h"
+#include "LearningUnrealCpp/Game/StateControllerGameInstanceSubsystem.h"
+
+class UStateControllerGameInstanceSubsystem;
 
 ABattleGameMode::ABattleGameMode(): BattleGameState(nullptr)
 {
@@ -23,6 +26,12 @@ void ABattleGameMode::BeginPlay()
 		BattleGameState->OnPlayerSpawn.AddDynamic(this, &ThisClass::PlayerSpawned);
 		BattleGameState->OnPlayerDeathEvent.AddDynamic(this, &ThisClass::PlayerDeath);
 	}
+	
+	if (!GameInstance) return;
+	UStateControllerGameInstanceSubsystem* StateController =
+		GameInstance->GetSubsystem<UStateControllerGameInstanceSubsystem>();
+	if (!StateController) return;
+	StateController->SetState(ESkibidiState::BATTLE);
 }
 
 void ABattleGameMode::SpawnPlayers()

@@ -6,7 +6,10 @@
 #include "HighScorePlayerState.h"
 #include "../SnakeGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "LearningUnrealCpp/Game/StateControllerGameInstanceSubsystem.h"
 
+
+class UStateControllerGameInstanceSubsystem;
 
 AHighScoreGameMode::AHighScoreGameMode(): HighScoreGameState(nullptr)
 {
@@ -29,6 +32,12 @@ void AHighScoreGameMode::BeginPlay()
 
 	//Game instance stuff
 	if (GameInstance) GameInstance->ResetHighScore();
+
+	if (!GameInstance) return;
+	UStateControllerGameInstanceSubsystem* StateController =
+		GameInstance->GetSubsystem<UStateControllerGameInstanceSubsystem>();
+	if (!StateController) return;
+	StateController->SetState(ESkibidiState::HIGHSCORE);
 }
 
 
@@ -80,7 +89,8 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 
 void AHighScoreGameMode::SpawnPlayers()
 {
-	//TODO: delay a bit before each creation
+	//Creates additional players, gives each a player state (as that doesn't get set automatically)
+	//Wish: i would have wanted to refactor the spawning a bit, since a lot of functions related to it are all over the place (but not time...............................!!!!)
 	if (GameInstance && GameInstance->GetAmountOfPlayers() > 1)
 	{
 		for (int i = 0; i < GameInstance->GetAmountOfPlayers()-1; i++)
@@ -101,6 +111,15 @@ void AHighScoreGameMode::SpawnPlayers()
 			if (PlayerActor) PlayerState->SetPlayerPawn(PlayerActor);
 		}
 	}
+
+	//AI!!! Creates pawns, gives each a player state and an ai controller
+	if (GameInstance && GameInstance->GetAmountOfAi() > 1)
+	{
+		for (int i = 0; i < GameInstance->GetAmountOfAi(); i++)
+		{
+			//Create ai
+		}
+	}
 }
 
 //Bound Functions
@@ -110,8 +129,6 @@ void AHighScoreGameMode::PlayerSpawned(ARollaBallPlayer* PlayerActor)
 	
 	if (PlayerActor && HighScoreGameState)
 		HighScoreGameState->AddCurrentPlayer(PlayerActor);
-
-	//TODO: set name
 }
 
 void AHighScoreGameMode::PlayerDeath(ARollaBallPlayer* PlayerActor)

@@ -13,4 +13,7 @@ UCLASS()
 class LEARNINGUNREALCPP_API AMainMenuGameMode : public ASnakeGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	virtual void BeginPlay() override;
 };

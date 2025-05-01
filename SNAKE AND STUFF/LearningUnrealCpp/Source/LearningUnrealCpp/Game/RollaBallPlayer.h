@@ -78,13 +78,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FString> PossiblePlayerNames;
 
-	// INPUTS //
+	// INPUT ACTIONS //
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UInputMappingContext* InputMapping;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "EnhancedInput")
 	UBaseMovementDataConfig* InputActions;
 
-	//Network Shiz
+	//Setup Shiz
 	UPROPERTY()
 	APlayerStateBase* SnakePlayerState;
 	int RepeatingCallsRemaining;

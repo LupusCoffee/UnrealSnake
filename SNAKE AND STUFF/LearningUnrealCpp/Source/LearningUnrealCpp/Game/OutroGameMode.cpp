@@ -3,17 +3,18 @@
 
 #include "OutroGameMode.h"
 #include "SnakeGameInstance.h"
+#include "StateControllerGameInstanceSubsystem.h"
+
+class UStateControllerGameInstanceSubsystem;
 
 void AOutroGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//spawn widget
-	//set text in widget
-
 	USnakeGameInstance* GameInstance = GetGameInstance<USnakeGameInstance>();
-	if (GameInstance)
-	{
-		
-	}
+	if (!GameInstance) return;
+	UStateControllerGameInstanceSubsystem* StateController =
+		GameInstance->GetSubsystem<UStateControllerGameInstanceSubsystem>();
+	if (!StateController) return;
+	StateController->SetState(ESkibidiState::OUTRO);
 }

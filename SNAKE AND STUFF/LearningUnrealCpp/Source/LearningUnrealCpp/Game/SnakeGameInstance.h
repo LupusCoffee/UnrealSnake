@@ -18,11 +18,13 @@ protected:
 	int HighestScore;
 	FString WinningPlayerName;
 	UPROPERTY(EditDefaultsOnly) int AmountOfPlayers = 1;
+	UPROPERTY(EditDefaultsOnly) int AmountOfAi = 0;
 
 public:
 	UFUNCTION(BlueprintCallable) int GetHighestScore();
 	UFUNCTION(BlueprintCallable) FString GetWinningPlayerName();
 	UFUNCTION(BlueprintCallable) int GetAmountOfPlayers();
+	UFUNCTION(BlueprintCallable) int GetAmountOfAi();
 
 	UFUNCTION() void SetHighestScore(int Score);
 	UFUNCTION() void SetWinningPlayerName(FString Name);

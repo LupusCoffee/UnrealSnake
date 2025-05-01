@@ -53,7 +53,7 @@ void ARollaBallPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Delay a bit
+	//Delay getting player state a bit
 	GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &ARollaBallPlayer::DelayGettingPlayerState, 1.0, false);	
 	
 	//so we work with smaller values when setting move and jump force
@@ -79,11 +79,9 @@ void ARollaBallPlayer::BeginPlay()
 
 void ARollaBallPlayer::DelayGettingPlayerState()
 {
-	// Once we've called this function enough times, clear the Timer.
 	if (--RepeatingCallsRemaining <= 0)
 	{
 		GetWorldTimerManager().ClearTimer(MemberTimerHandle);
-		// MemberTimerHandle can now be reused for any other Timer.
 	}
 	SnakePlayerState = GetPlayerState<APlayerStateBase>();
 }

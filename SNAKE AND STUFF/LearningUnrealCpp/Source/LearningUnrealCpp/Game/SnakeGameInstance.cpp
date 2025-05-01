@@ -22,6 +22,11 @@ int USnakeGameInstance::GetAmountOfPlayers()
 	return AmountOfPlayers;
 }
 
+int USnakeGameInstance::GetAmountOfAi()
+{
+	return AmountOfAi;
+}
+
 void USnakeGameInstance::SetHighestScore(int Score)
 {
 	HighestScore = Score;
@@ -40,7 +45,7 @@ void USnakeGameInstance::ResetHighScore()
 void USnakeGameInstance::PlayGame(bool IsHighScoreMode, FString MapNum, int PlayerAmount, int AiAmount)
 {
 	AmountOfPlayers = PlayerAmount;
-	//TODO: set ai amount too
+	AmountOfAi = AiAmount;
 	
 	if (IsHighScoreMode) UGameplayStatics::OpenLevel(this, FName("HighScoreMap" + MapNum));
 	else UGameplayStatics::OpenLevel(this, FName("BattleMap" + MapNum));
