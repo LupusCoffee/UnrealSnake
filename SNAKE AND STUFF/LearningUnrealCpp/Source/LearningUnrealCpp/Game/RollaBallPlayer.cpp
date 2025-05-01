@@ -79,10 +79,9 @@ void ARollaBallPlayer::BeginPlay()
 
 void ARollaBallPlayer::DelayGettingPlayerState()
 {
-	if (--RepeatingCallsRemaining <= 0)
-	{
-		GetWorldTimerManager().ClearTimer(MemberTimerHandle);
-	}
+	//Timer
+	if (--RepeatingCallsRemaining <= 0) GetWorldTimerManager().ClearTimer(MemberTimerHandle);
+	//stuff we wanna do after timer
 	SnakePlayerState = GetPlayerState<APlayerStateBase>();
 }
 
@@ -93,27 +92,6 @@ void ARollaBallPlayer::Tick(float DeltaTime)
 	//Gravity Push Down
 	const FVector Direction = FVector(0,0,-1.0f);
 	Mesh->AddForce(Direction * GravityForce);
-}
-
-// Called to bind functionality to input
-void ARollaBallPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	//TODO: when you make ai, all this shit needs to be moved to a "human" controller, so an "AI" controller can use move and jump functions via its behaviour
-	
-	//Set InputMapping as our current mapping.
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-	Subsystem->ClearAllMappings();
-	Subsystem->AddMappingContext(InputMapping, 0);
-
-	//Bind actions to input via PlayerInputComponent and UEnhancedInputComponent
-	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	Input->BindAction(InputActions->CameraMovement, ETriggerEvent::Triggered, this, "RotateCamera");
-	Input->BindAction(InputActions->MoveRight, ETriggerEvent::Triggered, this, "MoveRight");
-	Input->BindAction(InputActions->MoveForward, ETriggerEvent::Triggered, this, "MoveForward");
-	Input->BindAction(InputActions->Jump, ETriggerEvent::Started, this, "Jump");
 }
 
 inline void ARollaBallPlayer::RotateCamera(const FInputActionValue& Value)

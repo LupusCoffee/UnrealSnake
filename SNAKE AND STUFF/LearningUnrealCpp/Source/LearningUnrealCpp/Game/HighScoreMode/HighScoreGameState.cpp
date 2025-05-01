@@ -113,7 +113,6 @@ void AHighScoreGameState::RespawnPlayer(FPlayerToRespawn Respawnee)
 	
 	Respawnee.Controller->Possess(RespawneeActor);
 	Respawnee.Controller->GetPlayerState<AHighScorePlayerState>()->SetPlayerPawn(RespawneeActor);
-	int t = 1;
 }
 
 TArray<ULocalPlayer*> AHighScoreGameState::GetLocalPlayers()

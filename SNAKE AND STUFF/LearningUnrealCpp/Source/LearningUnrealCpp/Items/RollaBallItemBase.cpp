@@ -11,7 +11,8 @@
 ARollaBallItemBase::ARollaBallItemBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	//Create Components
 	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
@@ -38,9 +39,17 @@ void ARollaBallItemBase::BeginPlay()
 	
 }
 
-void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ARollaBallItemBase::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
+	if (CurrentCooldown > 0) CurrentCooldown -= DeltaSeconds;
+}
+
+void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (CurrentCooldown > 0) return;
+	
 	UActorComponent* ComponentActor = OtherActor->GetComponentByClass(UTail_Component::StaticClass());
 	if (ComponentActor)
 	{
@@ -48,6 +57,7 @@ void ARollaBallItemBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 		if (TailComponent)
 		{
 			TailComponent->AddTail();
+			CurrentCooldown = Cooldown;
 			OnTailOverlap();
 		}
 	}

@@ -12,7 +12,7 @@
 // Sets default values for this component's properties
 UBoostProvider::UBoostProvider()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UBoostProvider::BeginPlay()
@@ -48,14 +48,27 @@ void UBoostProvider::BeginPlay()
 	}
 }
 
+void UBoostProvider::TickComponent(float DeltaTime, enum ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (CurrentCooldown > 0) CurrentCooldown -= DeltaTime;
+}
+
 void UBoostProvider::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (CurrentCooldown > 0) return;
+	
 	UActorComponent* ComponentActor = OtherActor->GetComponentByClass(UBoostReciever::StaticClass());
 	if (ComponentActor)
 	{
 		UBoostReciever* BoostReciever = Cast<UBoostReciever>(ComponentActor);
-		if (BoostReciever) BoostReciever->Boost(BoostForce);
+		if (BoostReciever)
+		{
+			BoostReciever->Boost(BoostForce);
+			CurrentCooldown = Cooldown;
+		}
 	}
 }
 

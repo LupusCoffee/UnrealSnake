@@ -55,8 +55,6 @@ void AHighScoreGameMode::Tick(float DeltaTime)
 	HighScoreGameState->SetCurrentTime(HighScoreGameState->GetCurrentTime() - DeltaTime);
 	if (HighScoreGameState->GetCurrentTime() < 0)
 	{
-		//TODO: set state to outro
-		
 		if (GameInstance)
 		{
 			//Set winning player and their score

@@ -17,8 +17,8 @@ public:
 	
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	//Definite Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -33,8 +33,10 @@ protected:
 	UStaticMeshComponent* TriggerMesh;
 
 	// VARIABLES
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Cooldown = 15.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CurrentCooldown = 0.0f;
 
 	// FUNCTIONS
 	UFUNCTION()
